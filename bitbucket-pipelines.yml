@@ -14,4 +14,9 @@ pipelines:
           # You must commit the Gradle wrapper to your repository
           # https://docs.gradle.org/current/userguide/gradle_wrapper.html
           - bash ./gradlew build
+    - step:
+        name: Deploy to test
+        deployment: test
+        script:
+          - echo "Deploying to test environment"
 
