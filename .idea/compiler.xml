@@ -2,8 +2,10 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
+      <module name="ss-core-base.main" target="1.8" />
       <module name="SS-Core-Base.main" target="1.8" />
       <module name="SS-Core-Base.test" target="1.8" />
+      <module name="ss-core-base.test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
