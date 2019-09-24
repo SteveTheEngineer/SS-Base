@@ -27,4 +27,21 @@ public class Identifier {
     public String getNamespace() {
         return namespace;
     }
+
+    @Override
+    public int hashCode() {
+        return 16 * namespace.hashCode() * name.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null || obj.getClass().isAssignableFrom(this.getClass())) return false;
+        Identifier id = (Identifier) obj;
+        return id.namespace.equals(this.namespace) && id.name.equals(this.name);
+    }
+
+    @Override
+    public String toString() {
+        return namespace + ":" + name;
+    }
 }
