@@ -3,7 +3,7 @@ apply plugin: "java"
 group = pluginGroup
 version = "0"
 if(System.env.BUILD_NUMBER != null) {
-    version = "$System.env.BUILD_NUMBER"
+    version = "" + $System.env.BUILD_NUMBER
 }
 
 sourceCompatibility = '1.8'
