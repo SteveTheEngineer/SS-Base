@@ -1,11 +1,13 @@
-package ru.ste.stevesseries.corebase;
+package me.ste.stevesseries.corebase;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class NMSUtil {
+public final class NMSUtil {
+    private NMSUtil() {}
+
     public static String getNMSVersion() {
         return Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
     }

@@ -1,4 +1,4 @@
-package ru.ste.stevesseries.corebase;
+package me.ste.stevesseries.corebase;
 
 import org.bukkit.event.Listener;
 
