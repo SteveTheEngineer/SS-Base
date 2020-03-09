@@ -1,5 +1,6 @@
 package me.ste.stevesseries.corebase.registry;
 
+import com.google.common.base.Preconditions;
 import org.bukkit.NamespacedKey;
 
 import java.util.Map;
@@ -19,9 +20,7 @@ public class RegistryManager {
     }
 
     public Registry addRegistry(NamespacedKey id) {
-        if(registries.containsKey(id)) {
-            throw new IllegalArgumentException("Registry (" + id.toString() + ") already exists");
-        }
+        Preconditions.checkArgument(!registries.containsKey(id), "Registry (" + id.toString() + ") already exists");
         Registry registry = new Registry(id);
         registries.put(id, registry);
         return registry;

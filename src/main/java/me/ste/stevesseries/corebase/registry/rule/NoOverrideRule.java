@@ -5,7 +5,7 @@ import me.ste.stevesseries.corebase.registry.RegistryEntry;
 
 import java.util.function.Function;
 
-public class NoOverrideRule implements Function<RegistryEntry, String> {
+public class NoOverrideRule implements Function<RegistryEntry<?>, String> {
     private Registry registry;
 
     public NoOverrideRule(Registry registry) {

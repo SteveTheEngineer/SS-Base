@@ -1,6 +1,8 @@
 package me.ste.stevesseries.corebase.registry;
 
-import me.ste.stevesseries.corebase.CoreBase;
+import com.google.common.base.Preconditions;
+import java.util.HashSet;
+import me.ste.stevesseries.corebase.util.Utilities;
 import org.bukkit.NamespacedKey;
 
 import java.util.Arrays;
@@ -10,15 +12,17 @@ import java.util.function.Function;
 
 public class Registry {
     private NamespacedKey id;
-    private Set<Function<RegistryEntry, String>> entryRules;
-    private Set<RegistryEntry> entries;
+    private Set<Function<RegistryEntry<?>, String>> entryRules;
+    private Set<RegistryEntry<?>> entries;
     private boolean writable = true;
 
     public Registry(NamespacedKey id) {
         this.id = id;
+        entryRules = new HashSet<>();
+        entries = new HashSet<>();
     }
 
-    public Set<Function<RegistryEntry, String>> getEntryRules() {
+    public Set<Function<RegistryEntry<?>, String>> getEntryRules() {
         return entryRules;
     }
 
@@ -26,21 +30,21 @@ public class Registry {
         return id;
     }
 
-    public void addRules(Function<RegistryEntry, String>... rules) {
+    public void addRules(Function<RegistryEntry<?>, String>... rules) {
         entryRules.addAll(Arrays.asList(rules));
     }
 
-    public Optional<RegistryEntry> getEntry(NamespacedKey id) {
-        for(RegistryEntry entry : entries) {
+    public <T> Optional<RegistryEntry<T>> getEntry(NamespacedKey id) {
+        for(RegistryEntry<?> entry : entries) {
             if(entry.getId().equals(id)) {
-                return Optional.of(entry);
+                return Optional.of((RegistryEntry<T>) entry);
             }
         }
         return Optional.empty();
     }
 
-    public Optional<String> checkEntry(RegistryEntry entry) {
-        for(Function<RegistryEntry, String> rule : entryRules) {
+    public Optional<String> checkEntry(RegistryEntry<?> entry) {
+        for(Function<RegistryEntry<?>, String> rule : entryRules) {
             String result = rule.apply(entry);
             if(result != null) {
                 return Optional.of(result);
@@ -49,21 +53,19 @@ public class Registry {
         return Optional.empty();
     }
 
-    public void register(NamespacedKey id, Object object) {
-        if(!writable) {
-            throw new RegistryException("Registry (" + this.id.toString() + ") is closed");
-        }
-        RegistryEntry entry = new RegistryEntry(id, object);
+    public <T> void register(NamespacedKey id, T object) {
+        Preconditions.checkState(writable, "Registry (" + id.toString() + ") is closed");
+        RegistryEntry<T> entry = new RegistryEntry<>(id, object);
         Optional<String> checkResult = checkEntry(entry);
         if(!checkResult.isPresent()) {
-            Optional<RegistryEntry> existing = getEntry(id);
+            Optional<RegistryEntry<Object>> existing = getEntry(id);
             if(existing.isPresent()) {
-                CoreBase.getPlugin(CoreBase.class).getLogger().warning("Overriding existing registry (" + this.id.toString() + ") entry: " + id.toString() + " (" + existing.get().getClass().getName() + " with " + object.getClass().getName() + ")");
+                Utilities.logger.warning("Overriding existing registry (" + this.id.toString() + ") entry: " + id.toString() + " (" + existing.get().getClass().getName() + " with " + object.getClass().getName() + ")");
                 entries.remove(existing.get());
             }
             entries.add(entry);
         } else {
-            throw new RegistryException("Requirement unmet (" + this.id.toString() + "): " + checkResult.get());
+            throw new RegistryException("Requirement unmet (\"" + this.id.toString() + "\"): " + checkResult.get());
         }
     }
 

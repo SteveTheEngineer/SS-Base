@@ -2,11 +2,11 @@ package me.ste.stevesseries.corebase.registry;
 
 import org.bukkit.NamespacedKey;
 
-public class RegistryEntry {
+public class RegistryEntry<T> {
     private NamespacedKey id;
-    private Object object;
+    private T object;
 
-    public RegistryEntry(NamespacedKey id, Object object) {
+    public RegistryEntry(NamespacedKey id, T object) {
         this.id = id;
         this.object = object;
     }
@@ -15,7 +15,7 @@ public class RegistryEntry {
         return id;
     }
 
-    public Object getObject() {
+    public T getObject() {
         return object;
     }
 }

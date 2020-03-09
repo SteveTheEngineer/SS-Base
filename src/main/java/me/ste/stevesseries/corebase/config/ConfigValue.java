@@ -1,7 +1,10 @@
 package me.ste.stevesseries.corebase.config;
 
+import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
-import me.ste.stevesseries.corebase.CoreBase;
+import java.util.ArrayList;
+import java.util.List;
+import me.ste.stevesseries.corebase.util.Utilities;
 import org.bukkit.configuration.ConfigurationSection;
 
 import javax.script.Bindings;
@@ -18,15 +21,49 @@ public class ConfigValue {
         this.path = path;
     }
 
-    public String getValue(Map<String, String> context) {
-        Preconditions.checkState(section.isString(path), "Config value must be a string");
-        Bindings bindings = CoreBase.getPlugin(CoreBase.class).scriptEngine.getBindings(ScriptContext.ENGINE_SCOPE);
+    public String getAsString(Map<String, String> context) {
+        return getAsString(context, ($) -> true);
+    }
+
+    public String getAsString(Map<String, String> context, Function<String, Boolean> bindingFilter) {
+        Preconditions.checkState(section.isString(path), "Value not string");
+        Bindings bindings = Utilities.scriptEngine.getBindings(ScriptContext.ENGINE_SCOPE);
         bindings.clear();
-        bindings.put("section", section);
-        bindings.put("path", path);
+        if (bindingFilter.apply("section")) {
+            bindings.put("section", section);
+        }
+        if (bindingFilter.apply("path")) {
+            bindings.put("path", path);
+        }
         bindings.put("env", context);
-        CoreBase.getPlugin(CoreBase.class).scriptEngine.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
-        String str = section.getString(path);
+        Utilities.scriptEngine.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
+        return section.getString(path) == null ? "" : handleString(section.getString(path));
+    }
+
+    public List<String> getAsStringList(Map<String, String> context) {
+        return getAsStringList(context, ($) -> true);
+    }
+
+    public List<String> getAsStringList(Map<String, String> context, Function<String, Boolean> bindingFilter) {
+        Preconditions.checkState(section.isList("path"), "Value not list");
+        Bindings bindings = Utilities.scriptEngine.getBindings(ScriptContext.ENGINE_SCOPE);
+        bindings.clear();
+        if (bindingFilter.apply("section")) {
+            bindings.put("section", section);
+        }
+        if (bindingFilter.apply("path")) {
+            bindings.put("path", path);
+        }
+        bindings.put("env", context);
+        Utilities.scriptEngine.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
+        List<String> list = new ArrayList<>();
+        for (String s : section.getStringList(path)) {
+            list.add(handleString(s));
+        }
+        return list;
+    }
+
+    private String handleString(String str) {
         StringBuilder result = new StringBuilder();
         boolean dollarSign = false;
         int bracketsOpen = 0;
@@ -48,7 +85,7 @@ public class ConfigValue {
                     if(bracketsOpen <= 0) {
                         String evalResult = "";
                         try {
-                            evalResult = CoreBase.getPlugin(CoreBase.class).scriptEngine.eval(str.substring(beginIndex, i)).toString();
+                            evalResult = Utilities.scriptEngine.eval(str.substring(beginIndex, i)).toString();
                         } catch (ScriptException e) {
                             e.printStackTrace();
                         }
@@ -70,5 +107,38 @@ public class ConfigValue {
         }
         result.append(str.substring(lastEndIndex));
         return result.toString();
+    }
+
+    // =======================================
+    // NH (No Handling) methods
+
+    public int getAsInt() {
+        Preconditions.checkState(section.isInt(path), "Value not integer");
+        return section.getInt(path);
+    }
+
+    public List<Integer> getAsIntList() {
+        Preconditions.checkState(section.isList(path), "Value not list");
+        return section.getIntegerList(path);
+    }
+
+    public long getAsLong() {
+        Preconditions.checkState(section.isLong(path), "Value not long");
+        return section.getLong(path);
+    }
+
+    public List<Long> getAsLongList() {
+        Preconditions.checkState(section.isList(path), "Value not list");
+        return section.getLongList(path);
+    }
+
+    public double getAsDouble() {
+        Preconditions.checkState(section.isDouble(path), "Value not double");
+        return section.getDouble(path);
+    }
+
+    public List<Double> getAsDoubleList() {
+        Preconditions.checkState(section.isList(path), "Value not list");
+        return section.getDoubleList(path);
     }
 }

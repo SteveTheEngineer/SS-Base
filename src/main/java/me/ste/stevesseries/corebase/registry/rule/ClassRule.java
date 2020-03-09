@@ -4,10 +4,10 @@ import me.ste.stevesseries.corebase.registry.RegistryEntry;
 
 import java.util.function.Function;
 
-public class ClassRule implements Function<RegistryEntry, String> {
-    private Class clazz;
+public class ClassRule implements Function<RegistryEntry<?>, String> {
+    private Class<?> clazz;
 
-    public ClassRule(Class clazz) {
+    public ClassRule(Class<?> clazz) {
         this.clazz = clazz;
     }
 
