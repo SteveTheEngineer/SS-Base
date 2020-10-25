@@ -10,13 +10,26 @@ import org.bukkit.util.Vector;
 import java.util.*;
 import java.util.function.Function;
 
+/**
+ * Generic util class
+ */
 public final class GenericUtil {
     private GenericUtil() {}
 
+    /**
+     * Same as {@link GenericUtil#parseNamespacedKey(String, String)}, but with the default namespace set to ss-base
+     * @param namespacedKey stringified namespaced key
+     * @return namespaced key
+     */
     public static NamespacedKey parseNamespacedKey(String namespacedKey) {
         return GenericUtil.parseNamespacedKey(Base.getPlugin(Base.class).getName().toLowerCase(Locale.ROOT), namespacedKey);
     }
 
+    /**
+     * Parse a stringified namespaced key (for example, minecraft:stone) into a namespaced key
+     * @param namespacedKey stringified namespaced key
+     * @return namespaced key
+     */
     public static NamespacedKey parseNamespacedKey(String defaultNamespace, String namespacedKey) {
         String[] split = namespacedKey.split(":");
         if(namespacedKey.matches("[a-z0-9/._-]:[a-z0-9/._-]")) {
@@ -24,10 +37,15 @@ public final class GenericUtil {
         } else if(namespacedKey.matches("[a-z0-9/._-]")) {
             return new NamespacedKey(defaultNamespace, split[0]);
         } else {
-            throw new IllegalArgumentException("String is empty");
+            return null;
         }
     }
 
+    /**
+     * Serialize the specified location to JSON
+     * @param location the location
+     * @return json serialized location
+     */
     public static JsonObject locationToJson(Location location) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("world", location.getWorld().getUID().toString());
@@ -39,15 +57,23 @@ public final class GenericUtil {
         return jsonObject;
     }
 
+    /**
+     * Deserialize specified JSON to a location
+     * @param jsonObject json serialized location
+     * @return deserialized location
+     */
     public static Location locationFromJson(JsonObject jsonObject) {
         return new Location(Bukkit.getWorld(UUID.fromString(jsonObject.get("world").getAsString())), jsonObject.get("x").getAsDouble(), jsonObject.get("y").getAsDouble(), jsonObject.get("z").getAsDouble(), jsonObject.get("yaw").getAsFloat(), jsonObject.get("pitch").getAsFloat());
     }
 
+    /**
+     * Get all block locations inside the specified area
+     * @param loc1 first point
+     * @param loc2 second point
+     * @return blocks inside the area
+     */
     public static List<Location> getBlocksInside(Location loc1, Location loc2) {
-        List<Location> result = new ArrayList<>();
-        if(!Objects.equals(loc1.getWorld().getUID(), loc2.getWorld().getUID())) {
-            return result;
-        }
+        List<Location> blocks = new ArrayList<>();
 
         Vector min = Vector.getMinimum(loc1.toVector(), loc2.toVector());
         Vector max = Vector.getMaximum(loc1.toVector(), loc2.toVector());
@@ -55,29 +81,23 @@ public final class GenericUtil {
         for(int x = min.getBlockX(); x <= max.getBlockX(); x++) {
             for(int y = min.getBlockY(); y <= max.getBlockY(); y++) {
                 for(int z = min.getBlockZ(); z <= max.getBlockZ(); z++) {
-                    result.add(new Location(loc1.getWorld(), x, y, z));
+                    blocks.add(new Location(loc1.getWorld(), x, y, z));
                 }
             }
         }
 
-        return result;
+        return blocks;
     }
 
-    public static Vector rotateVector(Vector v, float yaw, float pitch, float roll) {
-        return v.clone().rotateAroundY(Math.toRadians(-1 * (yaw + 90))).rotateAroundX(Math.toRadians(-pitch)).rotateAroundZ(Math.toRadians(roll));
-    }
-
-    public static <T> T ifHas(JsonObject object, String key, Function<JsonElement, T> has) {
-        if(object.has(key)) {
-            return has.apply(object.get(key));
-        } else {
-            return null;
-        }
-    }
-
-    public static <T> void addReturnedIfNotNull(JsonObject object, String key, T value, Function<T, ? extends JsonElement> function) {
-        if(value != null) {
-            object.add(key, function.apply(value));
-        }
+    /**
+     * Rotate the vector by the specified angle
+     * @param vector the vector
+     * @param yaw yaw angle
+     * @param pitch pitch angle
+     * @param roll roll angle
+     * @return rotated vector
+     */
+    public static Vector rotateVector(Vector vector, float yaw, float pitch, float roll) {
+        return vector.clone().rotateAroundY(Math.toRadians(-1 * (yaw + 90))).rotateAroundX(Math.toRadians(-pitch)).rotateAroundZ(Math.toRadians(roll));
     }
 }

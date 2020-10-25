@@ -1,8 +1,6 @@
-name: SS-Core-Base
+name: SS-Base
 version: @version@
-main: me.ste.stevesseries.base.SSCoreBase
+main: me.ste.stevesseries.base.Base
 api-version: "1.14"
-load: STARTUP
-prefix: "SS | Core: Base"
-authors: [STEngineer]
-description: Provides common utilities for developers. This plugin is needed to all Steve's Series plugins in order to work.
+authors: [SteveTheEngineer]
+description: This plugin is an utility library, primarily for Steve's Series plugins.

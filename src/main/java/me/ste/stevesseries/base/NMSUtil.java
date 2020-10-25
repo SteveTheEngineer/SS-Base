@@ -5,6 +5,9 @@ import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
 
+/**
+ * NMS-related utility class
+ */
 public final class NMSUtil {
     private NMSUtil() {}
 

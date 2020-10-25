@@ -15,6 +15,9 @@ import org.bukkit.inventory.meta.PotionMeta;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
+/**
+ * Item stack builder class
+ */
 public class ItemStackBuilder {
     private ItemStack stack;
     private ItemMeta meta;
