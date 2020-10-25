@@ -1,6 +1,6 @@
 name: SS-Core-Base
 version: @version@
-main: me.ste.stevesseries.corebase.SSCoreBase
+main: me.ste.stevesseries.base.SSCoreBase
 api-version: "1.14"
 load: STARTUP
 prefix: "SS | Core: Base"

@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ss-core-base.iml" filepath="$PROJECT_DIR$/.idea/modules/ss-core-base.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ss-core-base.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ss-core-base.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ss-core-base.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ss-core-base.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/SS-Base.iml" filepath="$PROJECT_DIR$/.idea/modules/SS-Base.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/SS-Base.main.iml" filepath="$PROJECT_DIR$/.idea/modules/SS-Base.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/SS-Base.test.iml" filepath="$PROJECT_DIR$/.idea/modules/SS-Base.test.iml" />
     </modules>
   </component>
 </project>

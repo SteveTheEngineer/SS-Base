@@ -1,4 +1,4 @@
-package me.ste.stevesseries.corebase.util;
+package me.ste.stevesseries.base;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
