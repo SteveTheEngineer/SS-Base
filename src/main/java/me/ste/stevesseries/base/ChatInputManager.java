@@ -1,6 +1,10 @@
 package me.ste.stevesseries.base;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,10 +17,10 @@ import java.util.concurrent.CompletableFuture;
 public final class ChatInputManager {
     private ChatInputManager() {}
 
-    private final static Map<UUID, CompletableFuture<String>> playerMap = new HashMap<>();
+    private final static Multimap<UUID, CompletableFuture<String>> playerMap = ArrayListMultimap.create();
 
     /**
-     * Wait for the specified player to send something in the chat
+     * Accept chat input from the specified player
      * @param player the player
      * @return completable future that will resolve once the player has sent a message
      */
@@ -27,15 +31,15 @@ public final class ChatInputManager {
     }
 
     /**
-     * Stop waiting for the specified player to send something in the chat
+     * Clear all chat input callbacks for the specified player
      * @param player the player
      */
     public static void cancel(Player player) {
-        ChatInputManager.playerMap.remove(player.getUniqueId());
+        ChatInputManager.playerMap.removeAll(player.getUniqueId());
     }
 
     /**
-     * Check whether a plugin is waiting for the specified player to send something in the chat
+     * Check whether are there chat input callbacks for the specified player
      * @param player the player
      * @return true, if a plugin is waiting for the specified  player to send something in the chat
      */
@@ -47,7 +51,7 @@ public final class ChatInputManager {
      * @deprecated for internal use only
      */
     @Deprecated
-    public static Map<UUID, CompletableFuture<String>> getPlayerMap() {
+    public static Multimap<UUID, CompletableFuture<String>> getPlayerMap() {
         return ChatInputManager.playerMap;
     }
 }

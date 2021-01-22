@@ -14,69 +14,73 @@ import org.bukkit.inventory.meta.PotionMeta;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * Item stack builder class
  */
 public class ItemStackBuilder {
     private ItemStack stack;
-    private ItemMeta meta;
     private String displayName = null;
+    private final List<Consumer<ItemMeta>> modifiers = new ArrayList<>();
 
     public ItemStackBuilder(Material type, int amount) {
         this.stack = new ItemStack(type, amount);
-        this.meta = this.stack.getItemMeta();
     }
     public ItemStackBuilder(Material type) {
         this(type, 1);
     }
     public ItemStackBuilder(ItemStack itemStack) {
         this.stack = itemStack.clone();
-        this.meta = this.stack.getItemMeta();
+    }
+    public ItemStackBuilder() {
+        this.stack = new ItemStack(Material.AIR, 0);
     }
 
-    public ItemStackBuilder damage(int value) {
-        if(this.meta instanceof Damageable) {
-            ((Damageable) this.meta).setDamage(value);
-        }
+    public <T extends ItemMeta> ItemStackBuilder meta(Consumer<T> modifier) {
+        this.modifiers.add((Consumer<ItemMeta>) modifier);
         return this;
     }
     public ItemStackBuilder displayName(String name) {
         this.displayName = ChatColor.translateAlternateColorCodes('&', name);
         return this;
     }
+
+    @Deprecated
+    public ItemStackBuilder damage(int value) {
+        return this.meta(meta -> ((Damageable) meta).setDamage(value));
+    }
+    @Deprecated
     public ItemStackBuilder lore(List<String> lore) {
-        List<String> actualLore = new ArrayList<>();
-        for(String string : lore) {
-            actualLore.add(ChatColor.WHITE + ChatColor.translateAlternateColorCodes('&', string));
-        }
-        this.meta.setLore(actualLore);
-        return this;
+        return this.meta(meta -> meta.setLore(lore));
     }
+    @Deprecated
     public ItemStackBuilder lore(String... lore) {
-        this.lore(Arrays.asList(lore));
-        return this;
+        return this.lore(Arrays.asList(lore));
     }
+    @Deprecated
     public ItemStackBuilder enchantment(Enchantment enchantment, int level) {
-        this.meta.removeEnchant(enchantment);
-        this.meta.addEnchant(enchantment, level, true);
-        return this;
+        return this.meta(meta -> {
+            meta.removeEnchant(enchantment);
+            meta.addEnchant(enchantment, level, true);
+        });
     }
+    @Deprecated
     public ItemStackBuilder itemFlags(ItemFlag... itemFlags) {
-        this.meta.addItemFlags(itemFlags);
-        return this;
+        return this.meta(meta -> meta.addItemFlags(itemFlags));
     }
+    @Deprecated
     public ItemStackBuilder color(Color color) {
-        if(this.meta instanceof LeatherArmorMeta) {
-            ((LeatherArmorMeta) this.meta).setColor(color);
-        } else if(this.meta instanceof PotionMeta) {
-            ((PotionMeta) this.meta).setColor(color);
+        ItemMeta itemMeta = this.stack.getItemMeta();
+        if(itemMeta instanceof LeatherArmorMeta) {
+            return this.<LeatherArmorMeta>meta(meta -> meta.setColor(color));
+        } else if(itemMeta instanceof PotionMeta) {
+            return this.<PotionMeta>meta(meta -> meta.setColor(color));
         }
         return this;
     }
 
     public ItemStack build() {
-        this.stack.setItemMeta(this.meta);
         try {
             Object nmsStack = Objects.requireNonNull(NMSUtil.getOBCClass("inventory.CraftItemStack")).getMethod("asNMSCopy", this.stack.getClass()).invoke(null, this.stack);
             if(this.displayName != null) {
@@ -91,18 +95,8 @@ public class ItemStackBuilder {
             }
             ItemStack stack = (ItemStack) Objects.requireNonNull(NMSUtil.getOBCClass("inventory.CraftItemStack")).getMethod("asBukkitCopy", nmsStack.getClass()).invoke(null, nmsStack);
             ItemMeta meta = stack.getItemMeta();
-            meta.setLore(this.meta.getLore());
-            meta.addItemFlags(this.meta.getItemFlags().toArray(new ItemFlag[0]));
-            for(Map.Entry<Enchantment, Integer> e : this.meta.getEnchants().entrySet()) {
-                meta.addEnchant(e.getKey(), e.getValue(), true);
-            }
-            if(meta instanceof Damageable && this.meta instanceof Damageable) {
-                ((Damageable) meta).setDamage(((Damageable) this.meta).getDamage());
-            }
-            if(meta instanceof LeatherArmorMeta && this.meta instanceof LeatherArmorMeta) {
-                ((LeatherArmorMeta) meta).setColor(((LeatherArmorMeta) this.meta).getColor());
-            } else if(meta instanceof PotionMeta && this.meta instanceof PotionMeta) {
-                ((PotionMeta) meta).setColor(((PotionMeta) this.meta).getColor());
+            for(Consumer<ItemMeta> modifier : this.modifiers) {
+                modifier.accept(meta);
             }
             stack.setItemMeta(meta);
             return stack;

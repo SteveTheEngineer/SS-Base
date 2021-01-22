@@ -1,6 +1,5 @@
 package me.ste.stevesseries.base;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
@@ -12,18 +11,18 @@ public final class NMSUtil {
     private NMSUtil() {}
 
     public static String getNMSVersion() {
-        return Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+        return ReflectionUtil.NMS_VERSION;
     }
     public static Class<?> getNMSClass(String name) {
         try {
-            return Class.forName("net.minecraft.server." + getNMSVersion() + "." + name);
+            return ReflectionUtil.resolveClass(ReflectionUtil.NMS_PACKAGE, name);
         } catch (ClassNotFoundException e) {
             return null;
         }
     }
     public static Class<?> getOBCClass(String name) {
         try {
-            return Class.forName("org.bukkit.craftbukkit." + getNMSVersion() + "." + name);
+            return ReflectionUtil.resolveClass(ReflectionUtil.OBC_PACKAGE, name);
         } catch (ClassNotFoundException e) {
             return null;
         }
@@ -37,7 +36,7 @@ public final class NMSUtil {
         }
     }
     public static Object getConnection(Player p) {
-        Object handle = getHandle(p);
+        Object handle = NMSUtil.getHandle(p);
         try {
             return handle.getClass().getField("playerConnection").get(handle);
         } catch (IllegalAccessException | NoSuchFieldException e) {
@@ -45,9 +44,9 @@ public final class NMSUtil {
         }
     }
     public static void sendPacket(Player p, Object packet) {
-        Object connection = getConnection(p);
+        Object connection = NMSUtil.getConnection(p);
         try {
-            connection.getClass().getMethod("sendPacket", getNMSClass("Packet")).invoke(connection, packet);
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {}
+            connection.getClass().getMethod("sendPacket", NMSUtil.getNMSClass("Packet")).invoke(connection, packet);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException ignored) {}
     }
 }
