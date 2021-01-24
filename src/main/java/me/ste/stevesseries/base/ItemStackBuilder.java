@@ -50,11 +50,15 @@ public class ItemStackBuilder {
     public ItemStackBuilder damage(int value) {
         return this.meta(meta -> ((Damageable) meta).setDamage(value));
     }
-    @Deprecated
-    public ItemStackBuilder lore(List<String> lore) {
-        return this.meta(meta -> meta.setLore(lore));
+
+    public ItemStackBuilder lore(Iterable<String> lore) {
+        List<String> coloredLore = new ArrayList<>();
+        for(String str : lore) {
+            coloredLore.add(ChatColor.translateAlternateColorCodes('&', str));
+        }
+        return this.meta(meta -> meta.setLore(coloredLore));
     }
-    @Deprecated
+
     public ItemStackBuilder lore(String... lore) {
         return this.lore(Arrays.asList(lore));
     }
