@@ -51,7 +51,7 @@ public class ItemStackBuilder {
         return this.meta(meta -> ((Damageable) meta).setDamage(value));
     }
 
-    public ItemStackBuilder lore(Iterable<String> lore) {
+    public ItemStackBuilder lore(List<String> lore) {
         List<String> coloredLore = new ArrayList<>();
         for(String str : lore) {
             coloredLore.add(ChatColor.translateAlternateColorCodes('&', str));
