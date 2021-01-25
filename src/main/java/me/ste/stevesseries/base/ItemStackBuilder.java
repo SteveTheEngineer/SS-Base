@@ -52,6 +52,9 @@ public class ItemStackBuilder {
         return this;
     }
 
+    /**
+     * @deprecated use {@link ItemStackBuilder#meta(Consumer)} instead
+     */
     @Deprecated
     public ItemStackBuilder damage(int value) {
         return this.meta(meta -> ((Damageable) meta).setDamage(value));
@@ -68,6 +71,10 @@ public class ItemStackBuilder {
     public ItemStackBuilder lore(String... lore) {
         return this.lore(Arrays.asList(lore));
     }
+
+    /**
+     * @deprecated use {@link ItemStackBuilder#meta(Consumer)} instead
+     */
     @Deprecated
     public ItemStackBuilder enchantment(Enchantment enchantment, int level) {
         return this.meta(meta -> {
@@ -75,10 +82,18 @@ public class ItemStackBuilder {
             meta.addEnchant(enchantment, level, true);
         });
     }
+
+    /**
+     * @deprecated use {@link ItemStackBuilder#meta(Consumer)} instead
+     */
     @Deprecated
     public ItemStackBuilder itemFlags(ItemFlag... itemFlags) {
         return this.meta(meta -> meta.addItemFlags(itemFlags));
     }
+
+    /**
+     * @deprecated use {@link ItemStackBuilder#meta(Consumer)} instead
+     */
     @Deprecated
     public ItemStackBuilder color(Color color) {
         ItemMeta itemMeta = this.stack.getItemMeta();
