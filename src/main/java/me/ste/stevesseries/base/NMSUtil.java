@@ -6,7 +6,9 @@ import java.lang.reflect.InvocationTargetException;
 
 /**
  * NMS-related utility class
+ * @deprecated use {@link ReflectionUtil} instead
  */
+@Deprecated
 public final class NMSUtil {
     private NMSUtil() {}
 
@@ -14,6 +16,7 @@ public final class NMSUtil {
         return ReflectionUtil.NMS_VERSION;
     }
     public static Class<?> getNMSClass(String name) {
+
         try {
             return ReflectionUtil.resolveClass(ReflectionUtil.NMS_PACKAGE, name);
         } catch (ClassNotFoundException e) {

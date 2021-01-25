@@ -22,7 +22,8 @@ import java.util.function.Consumer;
 public class ItemStackBuilder {
     private ItemStack stack;
     private String displayName = null;
-    private final List<Consumer<ItemMeta>> modifiers = new ArrayList<>();
+    private final List<Consumer<ItemMeta>> metaModifiers = new ArrayList<>();
+    private final List<Consumer<ItemStack>> stackModifiers = new ArrayList<>();
 
     public ItemStackBuilder(Material type, int amount) {
         this.stack = new ItemStack(type, amount);
@@ -38,9 +39,14 @@ public class ItemStackBuilder {
     }
 
     public <T extends ItemMeta> ItemStackBuilder meta(Consumer<T> modifier) {
-        this.modifiers.add((Consumer<ItemMeta>) modifier);
+        this.metaModifiers.add((Consumer<ItemMeta>) modifier);
         return this;
     }
+    public ItemStackBuilder item(Consumer<ItemStack> modifier) {
+        this.stackModifiers.add(modifier);
+        return this;
+    }
+
     public ItemStackBuilder displayName(String name) {
         this.displayName = ChatColor.translateAlternateColorCodes('&', name);
         return this;
@@ -86,25 +92,28 @@ public class ItemStackBuilder {
 
     public ItemStack build() {
         try {
-            Object nmsStack = Objects.requireNonNull(NMSUtil.getOBCClass("inventory.CraftItemStack")).getMethod("asNMSCopy", this.stack.getClass()).invoke(null, this.stack);
+            Object nmsStack = Objects.requireNonNull(ReflectionUtil.resolveClass(ReflectionUtil.OBC_PACKAGE, "inventory.CraftItemStack")).getMethod("asNMSCopy", this.stack.getClass()).invoke(null, this.stack);
             if(this.displayName != null) {
-                Object compound = ((boolean) nmsStack.getClass().getMethod("hasTag").invoke(nmsStack)) ? nmsStack.getClass().getMethod("getTag").invoke(nmsStack) : Objects.requireNonNull(NMSUtil.getNMSClass("NBTTagCompound")).getConstructor().newInstance();
-                Object display = Objects.requireNonNull(NMSUtil.getNMSClass("NBTTagCompound")).getConstructor().newInstance();
+                Object compound = ((boolean) nmsStack.getClass().getMethod("hasTag").invoke(nmsStack)) ? nmsStack.getClass().getMethod("getTag").invoke(nmsStack) : Objects.requireNonNull(ReflectionUtil.resolveClass(ReflectionUtil.NMS_PACKAGE, "NBTTagCompound")).getConstructor().newInstance();
+                Object display = Objects.requireNonNull(ReflectionUtil.resolveClass(ReflectionUtil.NMS_PACKAGE, "NBTTagCompound")).getConstructor().newInstance();
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("italic", false);
                 jsonObject.addProperty("text", this.displayName);
                 display.getClass().getMethod("setString", String.class, String.class).invoke(display, "Name", jsonObject.toString());
-                compound.getClass().getMethod("set", String.class, NMSUtil.getNMSClass("NBTBase")).invoke(compound, "display", display);
+                compound.getClass().getMethod("set", String.class, ReflectionUtil.resolveClass(ReflectionUtil.NMS_PACKAGE, "NBTBase")).invoke(compound, "display", display);
                 nmsStack.getClass().getMethod("setTag", compound.getClass()).invoke(nmsStack, compound);
             }
-            ItemStack stack = (ItemStack) Objects.requireNonNull(NMSUtil.getOBCClass("inventory.CraftItemStack")).getMethod("asBukkitCopy", nmsStack.getClass()).invoke(null, nmsStack);
+            ItemStack stack = (ItemStack) Objects.requireNonNull(ReflectionUtil.resolveClass(ReflectionUtil.OBC_PACKAGE, "inventory.CraftItemStack")).getMethod("asBukkitCopy", nmsStack.getClass()).invoke(null, nmsStack);
+            for(Consumer<ItemStack> modifier : this.stackModifiers) {
+                modifier.accept(stack);
+            }
             ItemMeta meta = stack.getItemMeta();
-            for(Consumer<ItemMeta> modifier : this.modifiers) {
+            for(Consumer<ItemMeta> modifier : this.metaModifiers) {
                 modifier.accept(meta);
             }
             stack.setItemMeta(meta);
             return stack;
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return null;
