@@ -33,9 +33,9 @@ public final class GenericUtil {
     public static NamespacedKey parseNamespacedKey(String defaultNamespace, String namespacedKey) {
         String[] split = namespacedKey.split(":");
         if(namespacedKey.matches("[a-z0-9/._-]+:[a-z0-9/._-]+")) {
-            return new NamespacedKey(split[0], String.join(":", Arrays.copyOfRange(split, 1, split.length - 1)));
+            return new NamespacedKey(split[0], split[1]);
         } else if(namespacedKey.matches("[a-z0-9/._-]+")) {
-            return new NamespacedKey(defaultNamespace, split[0]);
+            return new NamespacedKey(defaultNamespace, namespacedKey);
         } else {
             return null;
         }
