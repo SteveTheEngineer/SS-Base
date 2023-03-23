@@ -1,7 +1,0 @@
-name: SS-Base
-version: @version@
-main: me.ste.stevesseries.base.Base
-api-version: "1.14"
-authors: [SteveTheEngineer]
-depend: [SS-Kotlin]
-description: This plugin is an utility library, primarily for Steve's Series plugins.

@@ -2,6 +2,15 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="1.8">
+      <module name="com.github.SteveTheEngineer.SS-Base.SS-Base.main" target="8" />
+      <module name="com.github.SteveTheEngineer.SS-Base.SS-Base.test" target="8" />
+      <module name="me.ste.stevesseries.SS-Base" target="17" />
+      <module name="me.ste.stevesseries.SS-Base.main" target="17" />
+      <module name="me.ste.stevesseries.SS-Base.test" target="17" />
+      <module name="SS-Base.API.main" target="8" />
+      <module name="SS-Base.API.test" target="8" />
+      <module name="SS-Base.Compat.main" target="8" />
+      <module name="SS-Base.Compat.test" target="8" />
       <module name="SS-Core-Base.main" target="1.8" />
       <module name="SS-Core-Base.test" target="1.8" />
     </bytecodeTargetLevel>
