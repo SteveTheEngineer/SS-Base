@@ -24,7 +24,7 @@ object GenericUtil {
         }
     }
 
-    @Deprecated("Legacy method. Use a custom solution instead.")
+    @Deprecated("Legacy method. Use a custom solution instead. EXTREMELY LOW PERFORMANCE!")
     fun getBlocksInBounds(a: BlockVector, b: BlockVector): Set<BlockVector> {
         val blocks: MutableSet<BlockVector> = HashSet()
 

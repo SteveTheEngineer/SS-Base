@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,7 +33,20 @@ public final class GenericUtil {
     }
 
     public static List<Location> getBlocksInside(Location loc1, Location loc2) {
-        return me.ste.stevesseries.base.util.GenericUtil.INSTANCE.getBlocksInBounds(loc1.toVector().toBlockVector(), loc2.toVector().toBlockVector()).stream().map(vector -> vector.toLocation(loc1.getWorld())).collect(Collectors.toList());
+        List<Location> blocks = new ArrayList<>();
+
+        Vector min = Vector.getMinimum(loc1.toVector(), loc2.toVector());
+        Vector max = Vector.getMaximum(loc1.toVector(), loc2.toVector());
+
+        for(int x = min.getBlockX(); x <= max.getBlockX(); x++) {
+            for(int y = min.getBlockY(); y <= max.getBlockY(); y++) {
+                for(int z = min.getBlockZ(); z <= max.getBlockZ(); z++) {
+                    blocks.add(new Location(loc1.getWorld(), x, y, z));
+                }
+            }
+        }
+
+        return blocks;
     }
 
     public static Vector rotateVector(Vector vector, float yaw, float pitch, float roll) {
