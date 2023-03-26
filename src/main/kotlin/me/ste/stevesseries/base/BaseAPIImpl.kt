@@ -1,9 +1,11 @@
 package me.ste.stevesseries.base
 
 import me.ste.stevesseries.base.api.BaseAPI
+import me.ste.stevesseries.base.api.command.CommandManager
 import me.ste.stevesseries.base.api.extensions.dataPath
 import me.ste.stevesseries.base.api.i18n.I18nManager
 import me.ste.stevesseries.base.api.map.MapManager
+import me.ste.stevesseries.base.command.CommandManagerImpl
 import me.ste.stevesseries.base.i18n.I18nManagerImpl
 import me.ste.stevesseries.base.map.MapManagerImpl
 import me.ste.stevesseries.base.storage.FileStorageProvider
@@ -22,6 +24,7 @@ class BaseAPIImpl(
     private val storageSaveTask = StorageSaveTask(this.plugin.logger, this.storageManager)
     private lateinit var storageSaveTimer: BukkitTask
 
+    private val commandManager = CommandManagerImpl()
     private val mapManager = MapManagerImpl()
     private val i18nManager = I18nManagerImpl(this.plugin)
 
@@ -64,4 +67,5 @@ class BaseAPIImpl(
     override fun getStorageManager() = this.storageManager
     override fun getMapManager() = this.mapManager
     override fun getI18nManager() = this.i18nManager
+    override fun getCommandManager() = this.commandManager
 }

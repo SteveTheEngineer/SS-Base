@@ -30,6 +30,7 @@ allprojects {
         mavenCentral()
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
         maven("https://oss.sonatype.org/content/repositories/snapshots")
+        maven("https://libraries.minecraft.net/")
     }
 
     dependencies {
@@ -41,15 +42,6 @@ dependencies {
     softDepend("com.github.SteveTheEngineer:SS-Kotlin:1.8.0")
 
     api(project(":API"))
-}
-
-tasks {
-    jar {
-        from(
-            project(":API").sourceSets.main.get().output,
-            project(":Compat").sourceSets.main.get().output
-        )
-    }
 }
 
 runServer {
@@ -71,4 +63,11 @@ publishing {
             from(components.getByName("java"))
         }
     }
+}
+
+tasks.jar {
+    from(
+        project(":API").sourceSets.main.get().output,
+        project(":Compat").sourceSets.main.get().output
+    )
 }

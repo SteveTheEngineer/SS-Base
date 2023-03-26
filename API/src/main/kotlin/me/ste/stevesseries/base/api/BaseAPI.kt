@@ -1,5 +1,6 @@
 package me.ste.stevesseries.base.api
 
+import me.ste.stevesseries.base.api.command.CommandManager
 import me.ste.stevesseries.base.api.i18n.I18nManager
 import me.ste.stevesseries.base.api.map.MapManager
 import me.ste.stevesseries.base.api.storage.StorageManager
@@ -31,4 +32,5 @@ interface BaseAPI {
     fun getStorageManager(): StorageManager
     fun getMapManager(): MapManager
     fun getI18nManager(): I18nManager
+    fun getCommandManager(): CommandManager
 }

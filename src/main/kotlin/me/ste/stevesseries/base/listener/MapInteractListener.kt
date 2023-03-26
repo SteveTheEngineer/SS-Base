@@ -1,7 +1,7 @@
 package me.ste.stevesseries.base.listener
 
 import me.ste.stevesseries.base.BaseAPIImpl
-import me.ste.stevesseries.base.api.events.EventManager
+import me.ste.stevesseries.base.api.event.EventManager
 import me.ste.stevesseries.base.api.extensions.*
 import me.ste.stevesseries.base.api.map.MapClickType
 import me.ste.stevesseries.base.api.map.MapHandler
@@ -21,7 +21,6 @@ import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.meta.MapMeta
-import org.bukkit.plugin.Plugin
 import org.bukkit.util.BoundingBox
 import java.util.UUID
 import kotlin.math.roundToInt

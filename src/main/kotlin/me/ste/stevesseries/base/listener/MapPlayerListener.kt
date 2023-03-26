@@ -1,6 +1,6 @@
 package me.ste.stevesseries.base.listener
 
-import me.ste.stevesseries.base.api.events.EventManager
+import me.ste.stevesseries.base.api.event.EventManager
 import me.ste.stevesseries.base.map.MapManagerImpl
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent

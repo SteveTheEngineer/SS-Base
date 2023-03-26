@@ -1,4 +1,4 @@
-package me.ste.stevesseries.base.api.events
+package me.ste.stevesseries.base.api.event
 
 import org.bukkit.event.Event
 import org.bukkit.event.EventPriority

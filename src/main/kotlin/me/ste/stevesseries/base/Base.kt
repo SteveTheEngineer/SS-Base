@@ -1,16 +1,23 @@
 package me.ste.stevesseries.base
 
+import com.mojang.brigadier.LiteralMessage
+import com.mojang.brigadier.builder.LiteralArgumentBuilder
+import com.mojang.brigadier.builder.RequiredArgumentBuilder
+import com.mojang.brigadier.exceptions.CommandSyntaxException
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import me.ste.stevesseries.base.api.BaseAPI
+import me.ste.stevesseries.base.api.command.CommandArguments
+import me.ste.stevesseries.base.api.command.CommandSource
 import me.ste.stevesseries.base.api.config.storage.YamlConfigStorage
-import me.ste.stevesseries.base.api.events.EventManager
+import me.ste.stevesseries.base.api.event.EventManager
 import me.ste.stevesseries.base.api.extensions.*
-import me.ste.stevesseries.base.api.map.color.MapColors
-import me.ste.stevesseries.base.api.storage.key.StorageKey
 import me.ste.stevesseries.base.listener.ChatInputListener
 import me.ste.stevesseries.base.listener.MapInteractListener
 import me.ste.stevesseries.base.listener.MapPlayerListener
-import org.bukkit.Bukkit
+import me.ste.stevesseries.base.listener.PluginListener
+import net.md_5.bungee.api.chat.BaseComponent
 import org.bukkit.NamespacedKey
+import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
 
 class Base : JavaPlugin() {
@@ -36,6 +43,7 @@ class Base : JavaPlugin() {
         ChatInputListener(this.impl).register(events)
         MapInteractListener(this.impl).register(events)
         MapPlayerListener(this.impl.getMapManager()).register(events)
+        PluginListener(this.impl).register(events)
 
         events.register(this)
 

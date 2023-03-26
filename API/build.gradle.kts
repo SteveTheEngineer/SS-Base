@@ -3,6 +3,7 @@ version = rootProject.version
 
 dependencies {
     api("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
+    api("com.mojang:brigadier:1.0.18")
 }
 
 java {

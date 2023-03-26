@@ -6,7 +6,7 @@ import java.awt.Color
 import java.awt.color.ColorSpace
 
 object MapColors {
-    private val COLOR_MATCH_MAP = Array<Byte>(256 * 256 * 256) { 0 }
+//    private val COLOR_MATCH_MAP = Array<Byte>(256 * 256 * 256) { 0 }
 
     val ALL_SHADES = mutableMapOf<Byte, MapColorShades>()
     val ALL_COLORS = mutableMapOf<Byte, MapColor>()
@@ -86,22 +86,22 @@ object MapColors {
     fun getShade(id: Byte) = ALL_SHADES[id]
     fun getColor(index: Byte) = ALL_COLORS[index]
 
-    fun matchColor(color: Color) = getColor(COLOR_MATCH_MAP[getRGB(color)])
+    fun matchColor(color: Color) = ALL_SHADES[MapPalette.matchColor(color)]
 
     private fun getRGB(color: Color) = ((color.red and 255) shl 16) or ((color.green and 255) shl 8) or ((color.blue and 255) shl 0)
 
-    init {
-        for (red in 0..255) {
-            for (green in 0..255) {
-                for (blue in 0..255) { // I don't know of any ways to remove this nesting
-                    val awtColor = Color(red, green, blue)
-
-                    val closestColor = MapPalette.matchColor(awtColor)
-
-                    val rgb = getRGB(awtColor)
-                    COLOR_MATCH_MAP[rgb] = closestColor
-                }
-            }
-        }
-    }
+//    init {
+//        for (red in 0..255) {
+//            for (green in 0..255) {
+//                for (blue in 0..255) { // I don't know of any ways to remove this nesting
+//                    val awtColor = Color(red, green, blue)
+//
+//                    val closestColor = MapPalette.matchColor(awtColor)
+//
+//                    val rgb = getRGB(awtColor)
+//                    COLOR_MATCH_MAP[rgb] = closestColor
+//                }
+//            }
+//        }
+//    }
 }
