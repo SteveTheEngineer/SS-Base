@@ -32,6 +32,7 @@ class BaseAPIImpl(
     fun onDisable() {
         this.storageSaveTimer.cancel()
         this.storageSaveTask.run()
+        this.commandManager.onDisable()
     }
 
     fun onEnable() {

@@ -1,6 +1,7 @@
 package me.ste.stevesseries.base.api.util
 
 import org.bukkit.Bukkit
+import java.lang.reflect.Constructor
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 
@@ -22,9 +23,9 @@ object ReflectionUtil {
         return this.getField(superClass, name)
     }
 
-    fun getMethod(clazz: Class<*>, name: String): Method? {
+    fun getMethod(clazz: Class<*>, name: String, vararg parameterTypes: Class<*>): Method? {
         try {
-            val method = clazz.getDeclaredMethod(name)
+            val method = clazz.getDeclaredMethod(name, *parameterTypes)
             method.isAccessible = true
             return method
         } catch (_: Throwable) {}
@@ -32,10 +33,20 @@ object ReflectionUtil {
         val superClass = clazz.superclass ?: return null
         return this.getMethod(superClass, name)
     }
+    fun <T> getConstructor(clazz: Class<T>, vararg parameterTypes: Class<*>): Constructor<T>? {
+        try {
+            val constructor = clazz.getDeclaredConstructor(*parameterTypes)
+            constructor.isAccessible = true
+            return constructor
+        } catch (_: Throwable) {}
 
-    fun getFirstMethod(clazz: Class<*>, vararg names: String): Method? {
+        val superClass = clazz.superclass ?: return null
+        return this.getConstructor(clazz, *parameterTypes)
+    }
+
+    fun getFirstMethod(clazz: Class<*>, vararg names: String, parameterTypes: Array<Class<*>> = emptyArray()): Method? {
         for (name in names) {
-            return this.getMethod(clazz, name) ?: continue
+            return this.getMethod(clazz, name, *parameterTypes) ?: continue
         }
 
         return null

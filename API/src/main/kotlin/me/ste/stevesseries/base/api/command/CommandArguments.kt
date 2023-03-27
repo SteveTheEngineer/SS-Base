@@ -12,7 +12,7 @@ import net.md_5.bungee.api.chat.BaseComponent
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.chat.TranslatableComponent
 import net.md_5.bungee.chat.ComponentSerializer
-import org.apache.commons.lang.math.FloatRange
+import org.apache.commons.lang.math.DoubleRange
 import org.apache.commons.lang.math.IntRange
 import org.bukkit.Axis
 import org.bukkit.Bukkit
@@ -142,7 +142,7 @@ object CommandArguments {
     fun entity() = this.entityClass.getDeclaredMethod("a").invoke(null) as ArgumentType<Any>
 
     fun entities() =
-        this.entityClass.getDeclaredMethod("multipleEntities").invoke(null) as ArgumentType<Collection<Any>>
+        this.entityClass.getDeclaredMethod("b").invoke(null) as ArgumentType<Collection<Any>>
 
     fun player() = this.entityClass.getDeclaredMethod("c").invoke(null) as ArgumentType<Any>
 
@@ -197,8 +197,8 @@ object CommandArguments {
 
     fun getVector2I(context: CommandContext<CommandSource>, name: String) =
         this.getResult(this.vec2IClass, "a", context, name) {
-            val x = it::class.java.getDeclaredField("a").get(it) as Int
-            val y = it::class.java.getDeclaredField("b").get(it) as Int
+            val x = ReflectionUtil.getField(it::class.java, "a")!!.get(it) as Int
+            val y = ReflectionUtil.getField(it::class.java, "b")!!.get(it) as Int
 
             Vector2I(x, y)
         }
@@ -220,8 +220,8 @@ object CommandArguments {
 
     fun getVector2D(context: CommandContext<CommandSource>, name: String) =
         this.getResult(this.vec2Class, "a", context, name) {
-            val x = it::class.java.getDeclaredField("i").get(it) as Float
-            val y = it::class.java.getDeclaredField("j").get(it) as Float
+            val x = ReflectionUtil.getField(it::class.java, "i")!!.get(it) as Float
+            val y = ReflectionUtil.getField(it::class.java, "j")!!.get(it) as Float
 
             Vector2D(x.toDouble(), y.toDouble())
         }
@@ -231,7 +231,7 @@ object CommandArguments {
     // TODO block predicate ???
 
     fun itemStack() = this.itemStackClass.getDeclaredMethod("a", this.commandBuildContext::class.java.enclosingClass)
-        .invoke(null, this.commandBuildContext) as ArgumentType<ItemStack>
+        .invoke(null, this.commandBuildContext) as ArgumentType<Any>
 
     fun getItemStack(context: CommandContext<CommandSource>, name: String) =
         this.getResult(this.itemStackClass, "a", context, name) {
@@ -343,26 +343,26 @@ object CommandArguments {
 
     // TODO entity anchor ???
 
-    fun floatRange() = this.criterionValueClass.getDeclaredMethod("b").invoke(null) as ArgumentType<Any>
+    fun doubleRange() = this.criterionValueClass.getDeclaredMethod("b").invoke(null) as ArgumentType<Any>
 
-    fun getFloatRange(context: CommandContext<CommandSource>, name: String): FloatRange {
+    fun getDoubleRange(context: CommandContext<CommandSource>, name: String): DoubleRange {
         val valueType = this.criterionValueFloatClass.getDeclaredMethod("parse", StringReader::class.java).returnType
         val value = context.getArgument(name, valueType)
 
-        val min = value::class.java.getDeclaredField("f").get(value) as Float
-        val max = value::class.java.getDeclaredField("g").get(value) as Float
+        val min = ReflectionUtil.getField(value::class.java, "c")!!.get(value) as Double
+        val max = ReflectionUtil.getField(value::class.java, "d")!!.get(value) as Double
 
-        return FloatRange(min, max)
+        return DoubleRange(min, max)
     }
 
     fun intRange() = this.criterionValueClass.getDeclaredMethod("a").invoke(null) as ArgumentType<Any>
 
     fun getIntRange(context: CommandContext<CommandSource>, name: String) =
         this.getResult(this.criterionValueIntClass, "a", context, name) {
-            val min = it::class.java.getDeclaredField("f").get(it) as Long
-            val max = it::class.java.getDeclaredField("g").get(it) as Long
+            val min = ReflectionUtil.getField(it::class.java, "c")!!.get(it) as Int
+            val max = ReflectionUtil.getField(it::class.java, "d")!!.get(it) as Int
 
-            IntRange(min.toInt(), max.toInt())
+            IntRange(min, max)
         }
 
     fun world() = this.dimensionClass.getDeclaredMethod("a").invoke(null) as ArgumentType<Any>

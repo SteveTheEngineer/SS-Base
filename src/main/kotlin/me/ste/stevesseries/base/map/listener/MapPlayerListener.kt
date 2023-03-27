@@ -1,4 +1,4 @@
-package me.ste.stevesseries.base.listener
+package me.ste.stevesseries.base.map.listener
 
 import me.ste.stevesseries.base.api.event.EventManager
 import me.ste.stevesseries.base.map.MapManagerImpl
